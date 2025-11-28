@@ -20,30 +20,30 @@ class _AverageGradePageState extends State<AverageGradePage> {
 
     if (n1 < 0 || n2 < 0) {
       setState(() {
-        resultText = ' no pueden ser negativas';
+        resultText = 'no pueden ser negativas';
       });
       return;
     }
 
-
     final average = (n1 + n2) * 5;
-    double discount = 0;
+    double discountPerc = 0;
     
-    if (average == 'Lunes') {
-      discount = 0;
-    } else if (average == 'Domingo') {
-      discount = 30;
-    } else if (average == 'Sabado') {
-      discount = 100;
+    final day = n3Text.trim().toLowerCase();
+    if (day == 'lunes') {
+      discountPerc = 0;
+    } else if (day == 'domingo') {
+      discountPerc = 30;
+    } else if (day == 'sabado' || day == 'sábado') {
+      discountPerc = 100;
     }
 
-    final discountAmount = average - discount;
+    final total = average * (1 - discountPerc / 100);
 
     setState(() {
       resultText =
         'Clientes: ${n1.toStringAsFixed(2)}, ${n2.toStringAsFixed(2)}\n'
-        'Descuento:  ${discount.toStringAsFixed(0)} %\n';
-        'Matrícula final: ${discountAmount.toStringAsFixed(2)}';
+        'Descuento: ${discountPerc.toStringAsFixed(0)}%\n'
+        'Total: ${total.toStringAsFixed(2)}';
     });
   }
 
@@ -63,12 +63,23 @@ class _AverageGradePageState extends State<AverageGradePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              SizedBox(
+                height: 180,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    'assets/images/destino_destacado.jpg',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
               const Text(
                 'Calcular el costo de los boletos',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-
               TextField(
                 decoration: const InputDecoration(
                   labelText: 'cantidad de ninos',
@@ -79,9 +90,7 @@ class _AverageGradePageState extends State<AverageGradePage> {
                   n1Text = value;
                 },
               ),
-
               const SizedBox(height: 16),
-
               TextField(
                 decoration: const InputDecoration(
                   labelText: 'Cantidad de adultos',
@@ -92,26 +101,22 @@ class _AverageGradePageState extends State<AverageGradePage> {
                   n2Text = value;
                 },
               ),
-
               const SizedBox(height: 16),
-
               TextField(
                 decoration: const InputDecoration(
                   labelText: 'Dias de visita',
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.text,
                 onChanged: (value) {
                   n3Text = value;
                 },
               ),
-
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: calculateAverage,
                 child: const Text('Calcular Total'),
               ),
-
               const SizedBox(height: 16),
               Text(resultText),
             ],
